@@ -102,6 +102,24 @@ define('lyrical-frontend/tests/helpers/start-app.jshint', ['exports'], function 
     assert.ok(true, 'helpers/start-app.js should pass jshint.');
   });
 });
+define('lyrical-frontend/tests/old/app.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - old');
+  QUnit.test('old/app.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'old/app.js should pass jshint.');
+  });
+});
+define('lyrical-frontend/tests/old/router.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - old');
+  QUnit.test('old/router.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'old/router.js should pass jshint.');
+  });
+});
 define('lyrical-frontend/tests/router.jshint', ['exports'], function (exports) {
   'use strict';
 

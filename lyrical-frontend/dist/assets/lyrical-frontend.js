@@ -75,6 +75,32 @@ define('lyrical-frontend/initializers/export-application-global', ['exports', 'e
     initialize: initialize
   };
 });
+define('lyrical-frontend/old/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'lyrical-frontend/old/config/environment'], function (exports, _ember, _emberResolver, _emberLoadInitializers, _lyricalFrontendOldConfigEnvironment) {
+
+  var App = undefined;
+
+  _ember['default'].MODEL_FACTORY_INJECTIONS = true;
+
+  App = _ember['default'].Application.extend({
+    modulePrefix: _lyricalFrontendOldConfigEnvironment['default'].modulePrefix,
+    podModulePrefix: _lyricalFrontendOldConfigEnvironment['default'].podModulePrefix,
+    Resolver: _emberResolver['default']
+  });
+
+  (0, _emberLoadInitializers['default'])(App, _lyricalFrontendOldConfigEnvironment['default'].modulePrefix);
+
+  exports['default'] = App;
+});
+define('lyrical-frontend/old/router', ['exports', 'ember', 'lyrical-frontend/old/config/environment'], function (exports, _ember, _lyricalFrontendOldConfigEnvironment) {
+
+  var Router = _ember['default'].Router.extend({
+    location: _lyricalFrontendOldConfigEnvironment['default'].locationType
+  });
+
+  Router.map(function () {});
+
+  exports['default'] = Router;
+});
 define('lyrical-frontend/router', ['exports', 'ember', 'lyrical-frontend/config/environment'], function (exports, _ember, _lyricalFrontendConfigEnvironment) {
 
   var Router = _ember['default'].Router.extend({
@@ -97,7 +123,7 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
             "column": 0
           },
           "end": {
-            "line": 30,
+            "line": 33,
             "column": 0
           }
         },
@@ -219,9 +245,18 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
         dom.appendChild(el4, el5);
         var el5 = dom.createElement("div");
         dom.setAttribute(el5, "class", "panel-body");
+        var el6 = dom.createTextNode("\n        ");
+        dom.appendChild(el5, el6);
         var el6 = dom.createElement("p");
         var el7 = dom.createTextNode("some lyrics");
         dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n        ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("p");
+        dom.setAttribute(el6, "class", "author");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n      ");
         dom.appendChild(el5, el6);
         dom.appendChild(el4, el5);
         var el5 = dom.createTextNode("\n    ");
@@ -247,7 +282,7 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 3, 3);
         return morphs;
       },
-      statements: [["content", "outlet", ["loc", [null, [28, 2], [28, 12]]]]],
+      statements: [["content", "outlet", ["loc", [null, [31, 2], [31, 12]]]]],
       locals: [],
       templates: []
     };
@@ -347,7 +382,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("lyrical-frontend/app")["default"].create({"name":"lyrical-frontend","version":"0.0.0+9114c8da"});
+  require("lyrical-frontend/app")["default"].create({"name":"lyrical-frontend","version":"0.0.0+90e3ad20"});
 }
 
 /* jshint ignore:end */
