@@ -55,6 +55,18 @@ define('lyrical-frontend/components/app-version', ['exports', 'ember-cli-app-ver
     name: name
   });
 });
+define('lyrical-frontend/components/search-result', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Component.extend({
+    lyrics: '',
+    actions: {
+      getLyrics: function getLyrics(id) {
+        $.getJSON('http://api.musixmatch.com/ws/1.1/track.lyrics.get?format=JSONP&callback=?&apikey=2e165c9c4113265e932f48c2be93c705&track_id=' + id).then((function (res) {
+          this.set('lyrics', res.message.body.lyrics.lyrics_body);
+        }).bind(this));
+      }
+    }
+  });
+});
 define('lyrical-frontend/controllers/array', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
 });
@@ -348,6 +360,68 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
     };
   })());
 });
+define("lyrical-frontend/templates/components/search-result", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    return {
+      meta: {
+        "revision": "Ember@1.13.11",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 6,
+            "column": 10
+          }
+        },
+        "moduleName": "lyrical-frontend/templates/components/search-result.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("a");
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "entry panel panel-default");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "panel-body");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(element0, [0]);
+        var morphs = new Array(3);
+        morphs[0] = dom.createElementMorph(element0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element1, [1]), 1, 1);
+        morphs[2] = dom.createMorphAt(element1, 3, 3);
+        return morphs;
+      },
+      statements: [["element", "action", ["getLyrics", ["get", "result.track_id", ["loc", [null, [1, 24], [1, 39]]]]], [], ["loc", [null, [1, 3], [1, 41]]]], ["content", "yield", ["loc", [null, [3, 0], [3, 9]]]], ["content", "lyrics", ["loc", [null, [5, 0], [5, 10]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
 define("lyrical-frontend/templates/index", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     return {
@@ -426,6 +500,65 @@ define("lyrical-frontend/templates/search", ["exports"], function (exports) {
 define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     var child0 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@1.13.11",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 10,
+                "column": 2
+              },
+              "end": {
+                "line": 12,
+                "column": 2
+              }
+            },
+            "moduleName": "lyrical-frontend/templates/userfeed.hbs"
+          },
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("    ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("p");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode(" ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("span");
+            dom.setAttribute(el2, "style", "opacity:0.5;");
+            var el3 = dom.createTextNode("by ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" in ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var element0 = dom.childAt(fragment, [1]);
+            var element1 = dom.childAt(element0, [2]);
+            var morphs = new Array(3);
+            morphs[0] = dom.createMorphAt(element0, 0, 0);
+            morphs[1] = dom.createMorphAt(element1, 1, 1);
+            morphs[2] = dom.createMorphAt(element1, 3, 3);
+            return morphs;
+          },
+          statements: [["content", "result.name", ["loc", [null, [11, 7], [11, 22]]]], ["content", "result.artist", ["loc", [null, [11, 53], [11, 70]]]], ["content", "result.album", ["loc", [null, [11, 74], [11, 90]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
       return {
         meta: {
           "revision": "Ember@1.13.11",
@@ -436,7 +569,7 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
               "column": 0
             },
             "end": {
-              "line": 15,
+              "line": 13,
               "column": 0
             }
           },
@@ -447,59 +580,20 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
         hasRendered: false,
         buildFragment: function buildFragment(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("  ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("a");
-          var el2 = dom.createElement("div");
-          dom.setAttribute(el2, "class", "entry panel panel-default");
-          var el3 = dom.createTextNode("\n  ");
-          dom.appendChild(el2, el3);
-          var el3 = dom.createElement("div");
-          dom.setAttribute(el3, "class", "panel-body");
-          var el4 = dom.createTextNode("\n    ");
-          dom.appendChild(el3, el4);
-          var el4 = dom.createElement("p");
-          var el5 = dom.createComment("");
-          dom.appendChild(el4, el5);
-          var el5 = dom.createTextNode(" ");
-          dom.appendChild(el4, el5);
-          var el5 = dom.createElement("span");
-          dom.setAttribute(el5, "style", "opacity:0.5;");
-          var el6 = dom.createTextNode("by ");
-          dom.appendChild(el5, el6);
-          var el6 = dom.createComment("");
-          dom.appendChild(el5, el6);
-          var el6 = dom.createTextNode(" in ");
-          dom.appendChild(el5, el6);
-          var el6 = dom.createComment("");
-          dom.appendChild(el5, el6);
-          dom.appendChild(el4, el5);
-          dom.appendChild(el3, el4);
-          var el4 = dom.createTextNode("\n  ");
-          dom.appendChild(el3, el4);
-          dom.appendChild(el2, el3);
-          var el3 = dom.createTextNode("\n  ");
-          dom.appendChild(el2, el3);
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
+          var el1 = dom.createComment("");
           dom.appendChild(el0, el1);
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element0 = dom.childAt(fragment, [1]);
-          var element1 = dom.childAt(element0, [0, 1, 1]);
-          var element2 = dom.childAt(element1, [2]);
-          var morphs = new Array(4);
-          morphs[0] = dom.createAttrMorph(element0, 'onclick');
-          morphs[1] = dom.createMorphAt(element1, 0, 0);
-          morphs[2] = dom.createMorphAt(element2, 1, 1);
-          morphs[3] = dom.createMorphAt(element2, 3, 3);
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["attribute", "onclick", ["get", "action", ["loc", [null, [10, 15], [10, 21]]]]], ["content", "result.name", ["loc", [null, [12, 7], [12, 22]]]], ["content", "result.artist", ["loc", [null, [12, 53], [12, 70]]]], ["content", "result.album", ["loc", [null, [12, 74], [12, 90]]]]],
+        statements: [["block", "search-result", [], ["result", ["subexpr", "@mut", [["get", "result", ["loc", [null, [10, 26], [10, 32]]]]], [], []]], 0, null, ["loc", [null, [10, 2], [12, 20]]]]],
         locals: ["result"],
-        templates: []
+        templates: [child0]
       };
     })();
     return {
@@ -512,7 +606,7 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 15,
+            "line": 13,
             "column": 9
           }
         },
@@ -553,7 +647,7 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "search", ["loc", [null, [3, 16], [3, 22]]]]], [], []]], ["loc", [null, [3, 2], [3, 24]]]], ["block", "each", [["get", "model", ["loc", [null, [9, 18], [9, 23]]]]], [], 0, null, ["loc", [null, [9, 0], [15, 9]]]]],
+      statements: [["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "search", ["loc", [null, [3, 16], [3, 22]]]]], [], []]], ["loc", [null, [3, 2], [3, 24]]]], ["block", "each", [["get", "model", ["loc", [null, [9, 18], [9, 23]]]]], [], 0, null, ["loc", [null, [9, 0], [13, 9]]]]],
       locals: [],
       templates: [child0]
     };

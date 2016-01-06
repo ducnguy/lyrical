@@ -7,9 +7,7 @@
 </div>
 
 {{#each result in model}}
-  <a onclick={{action}}><div class="entry panel panel-default">
-  <div class="panel-body">
+  {{#search-result result=result}}
     <p>{{result.name}} <span style='opacity:0.5;'>by {{result.artist}} in {{result.album}}</span></p>
-  </div>
-  </div></a>
+  {{/search-result}}
 {{/each}}
