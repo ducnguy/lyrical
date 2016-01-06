@@ -8,7 +8,12 @@ export default DS.JSONAPISerializer.extend({
         'id': track.track.track_id,
         'type': type.modelName,
         'attributes': {
-          'track_share_url': track.track.track_share_url
+          'share_url': track.track.track_share_url,
+          'track_id': track.track.track_id,
+          'artist': track.track.artist_name,
+          'spotify_id': track.track.spotify_id,
+          'album': track.track.album_name,
+          'name': track.track.track_name
         }
       })
     })

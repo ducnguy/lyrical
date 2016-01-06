@@ -15,11 +15,11 @@ export default DS.JSONAPIAdapter.extend({
   },
   buildURL: function(id) {
     return this.get('host') + this.get('namespace') + 'track.search?format=JSONP&callback=?&apikey=' + this.get('headers').api_key
-      + '&q=' + id.split(' ').join('%20');
+      +'&q=' + id.split(' ').join('%20');
   },
   query: function(store, type, params, snapshot) {
     const URL = this.buildURL(params.search);
-    console.log(params);
+    console.log(URL);
     return $.getJSON(URL);
   }
 });

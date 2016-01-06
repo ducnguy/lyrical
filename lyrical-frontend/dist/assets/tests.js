@@ -189,7 +189,7 @@ define('lyrical-frontend/tests/serializers/search.jshint', ['exports'], function
   QUnit.module('JSHint - serializers');
   QUnit.test('serializers/search.js should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'serializers/search.js should pass jshint.\nserializers/search.js: line 13, col 9, Missing semicolon.\nserializers/search.js: line 14, col 7, Missing semicolon.\n\n2 errors');
+    assert.ok(false, 'serializers/search.js should pass jshint.\nserializers/search.js: line 18, col 9, Missing semicolon.\nserializers/search.js: line 19, col 7, Missing semicolon.\n\n2 errors');
   });
 });
 define('lyrical-frontend/tests/test-helper', ['exports', 'lyrical-frontend/tests/helpers/resolver', 'ember-qunit'], function (exports, _lyricalFrontendTestsHelpersResolver, _emberQunit) {
