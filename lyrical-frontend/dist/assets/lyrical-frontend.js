@@ -9,7 +9,6 @@ define('lyrical-frontend/adapters/search', ['exports', 'ember-data'], function (
     host: 'http://api.musixmatch.com/',
     headers: {
       'api_key': '2e165c9c4113265e932f48c2be93c705'
-
     },
     ajaxOptions: function ajaxOptions(url, type) {
       var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -20,7 +19,7 @@ define('lyrical-frontend/adapters/search', ['exports', 'ember-data'], function (
       return this._super(url, type, options);
     },
     buildURL: function buildURL(id) {
-      return this.get('host') + this.get('namespace') + 'track.search?format=JSONP&callback=?&apikey=' + this.get('headers').api_key + '&q=' + id.split(' ').join('%20');
+      return this.get('host') + this.get('namespace') + 'track.search?format=JSONP&callback=?&page_size=30&apikey=' + this.get('headers').api_key + '&q=' + id.split(' ').join('%20');
     },
     query: function query(store, type, params, snapshot) {
       var URL = this.buildURL(params.search);
@@ -202,10 +201,15 @@ define('lyrical-frontend/serializers/search', ['exports', 'ember-data'], functio
             'artist': track.track.artist_name,
             'spotify_id': track.track.spotify_id,
             'album': track.track.album_name,
-            'name': track.track.track_name
+            'name': track.track.track_name,
+            'rank': track.track.track_rating
           }
         });
       });
+      normalizedRecords.sort(function (a, b) {
+        return b.attributes.rank - a.attributes.rank;
+      });
+      normalizedRecords = normalizedRecords.slice(0, 4);
       normalizedRecords = { data: normalizedRecords };
       return normalizedRecords;
     }

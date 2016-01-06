@@ -4,7 +4,7 @@ define('lyrical-frontend/tests/adapters/search.jshint', ['exports'], function (e
   QUnit.module('JSHint - adapters');
   QUnit.test('adapters/search.js should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'adapters/search.js should pass jshint.\nadapters/search.js: line 18, col 7, Bad line breaking before \'+\'.\nadapters/search.js: line 23, col 12, \'$\' is not defined.\nadapters/search.js: line 20, col 40, \'snapshot\' is defined but never used.\n\n3 errors');
+    assert.ok(false, 'adapters/search.js should pass jshint.\nadapters/search.js: line 17, col 7, Bad line breaking before \'+\'.\nadapters/search.js: line 22, col 12, \'$\' is not defined.\nadapters/search.js: line 19, col 40, \'snapshot\' is defined but never used.\n\n3 errors');
   });
 });
 define('lyrical-frontend/tests/app.jshint', ['exports'], function (exports) {
@@ -336,7 +336,7 @@ define('lyrical-frontend/tests/serializers/search.jshint', ['exports'], function
   QUnit.module('JSHint - serializers');
   QUnit.test('serializers/search.js should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'serializers/search.js should pass jshint.\nserializers/search.js: line 18, col 9, Missing semicolon.\nserializers/search.js: line 19, col 7, Missing semicolon.\n\n2 errors');
+    assert.ok(false, 'serializers/search.js should pass jshint.\nserializers/search.js: line 19, col 9, Missing semicolon.\nserializers/search.js: line 20, col 7, Missing semicolon.\nserializers/search.js: line 23, col 7, Missing semicolon.\n\n3 errors');
   });
 });
 define('lyrical-frontend/tests/test-helper', ['exports', 'lyrical-frontend/tests/helpers/resolver', 'ember-qunit'], function (exports, _lyricalFrontendTestsHelpersResolver, _emberQunit) {

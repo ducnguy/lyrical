@@ -13,10 +13,15 @@ export default DS.JSONAPISerializer.extend({
           'artist': track.track.artist_name,
           'spotify_id': track.track.spotify_id,
           'album': track.track.album_name,
-          'name': track.track.track_name
+          'name': track.track.track_name,
+          'rank': track.track.track_rating
         }
       })
     })
+    normalizedRecords.sort(function(a, b) {
+      return b.attributes.rank - a.attributes.rank;
+    })
+    normalizedRecords = normalizedRecords.slice(0,4);
     normalizedRecords = {data: normalizedRecords};
     return normalizedRecords;
   }
