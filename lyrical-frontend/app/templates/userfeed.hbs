@@ -1,0 +1,10 @@
+<div class="input-group">
+  <span class="input-group-addon" id="basic-addon1">Search for a song</span>
+  {{input value=search}}
+  {{#each result in model}}
+    <li>{{result.track_share_url}}</li>
+  {{/each}}
+  {{!-- <div class="input-group-btn">
+    <button {{action 'findSong'}} class='btn btn-default'>Find lyrics</button>
+  </div> --}}
+</div>

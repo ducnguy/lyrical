@@ -3,6 +3,32 @@
 
 /* jshint ignore:end */
 
+define('lyrical-frontend/adapters/search', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].JSONAPIAdapter.extend({
+    namespace: 'ws/1.1/',
+    host: 'http://api.musixmatch.com/',
+    headers: {
+      'api_key': '2e165c9c4113265e932f48c2be93c705'
+
+    },
+    ajaxOptions: function ajaxOptions(url, type) {
+      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+      options.crossDomain = true;
+      options.dataType = 'json';
+      options.xhrFields = { withCredentials: false };
+      return this._super(url, type, options);
+    },
+    buildURL: function buildURL(id) {
+      return this.get('host') + this.get('namespace') + 'track.search?format=JSONP&callback=?&apikey=' + this.get('headers').api_key + '&q=' + id.split(' ').join('%20');
+    },
+    query: function query(store, type, params, snapshot) {
+      var URL = this.buildURL(params.search);
+      console.log(params);
+      return $.getJSON(URL);
+    }
+  });
+});
 define('lyrical-frontend/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'lyrical-frontend/config/environment'], function (exports, _ember, _emberResolver, _emberLoadInitializers, _lyricalFrontendConfigEnvironment) {
 
   var App = undefined;
@@ -34,6 +60,19 @@ define('lyrical-frontend/controllers/array', ['exports', 'ember'], function (exp
 });
 define('lyrical-frontend/controllers/object', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
+});
+define('lyrical-frontend/controllers/userfeed', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Controller.extend({
+    queryParams: ['search'],
+    search: ''
+    /* actions: {
+       findSong() {
+         console.log('called')
+         var query = this.get('searchQuery');
+         console.log(this.store.query('search', {name: 'wildest dreams'}));
+       }
+     }*/
+  });
 });
 define('lyrical-frontend/initializers/app-version', ['exports', 'ember-cli-app-version/initializer-factory', 'lyrical-frontend/config/environment'], function (exports, _emberCliAppVersionInitializerFactory, _lyricalFrontendConfigEnvironment) {
   exports['default'] = {
@@ -75,6 +114,16 @@ define('lyrical-frontend/initializers/export-application-global', ['exports', 'e
     initialize: initialize
   };
 });
+define('lyrical-frontend/models/search-result', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].Model.extend({
+    name: _emberData['default'].attr()
+  });
+});
+define('lyrical-frontend/models/search', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].Model.extend({
+    track_share_url: _emberData['default'].attr('String')
+  });
+});
 define('lyrical-frontend/old/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'lyrical-frontend/old/config/environment'], function (exports, _ember, _emberResolver, _emberLoadInitializers, _lyricalFrontendOldConfigEnvironment) {
 
   var App = undefined;
@@ -107,9 +156,45 @@ define('lyrical-frontend/router', ['exports', 'ember', 'lyrical-frontend/config/
     location: _lyricalFrontendConfigEnvironment['default'].locationType
   });
 
-  Router.map(function () {});
+  Router.map(function () {
+    this.route('userfeed');
+    this.resource('search');
+  });
 
   exports['default'] = Router;
+});
+define('lyrical-frontend/routes/search', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend();
+});
+define('lyrical-frontend/routes/userfeed', ['exports', 'ember'], function (exports, _ember) {
+  exports['default'] = _ember['default'].Route.extend({
+    queryParams: {
+      search: {
+        refreshModel: true
+      }
+    },
+    model: function model(params) {
+      return this.store.find('search', params);
+    }
+  });
+});
+define('lyrical-frontend/serializers/search', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].JSONAPISerializer.extend({
+    normalizeArrayResponse: function normalizeArrayResponse(store, type, payload) {
+      var normalizedRecords = [];
+      payload.message.body.track_list.map(function (track) {
+        normalizedRecords.push({
+          'id': track.track.track_id,
+          'type': type.modelName,
+          'attributes': {
+            'track_share_url': track.track.track_share_url
+          }
+        });
+      });
+      normalizedRecords = { data: normalizedRecords };
+      return normalizedRecords;
+    }
+  });
 });
 define("lyrical-frontend/templates/application", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
@@ -237,6 +322,10 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
         dom.setAttribute(el2, "class", "col-md-6");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
         var el3 = dom.createElement("a");
         dom.setAttribute(el3, "href", "");
         var el4 = dom.createElement("div");
@@ -266,10 +355,6 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
         var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
@@ -279,10 +364,10 @@ define("lyrical-frontend/templates/application", ["exports"], function (exports)
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2]), 3, 3);
+        morphs[0] = dom.createMorphAt(dom.childAt(fragment, [2, 1]), 1, 1);
         return morphs;
       },
-      statements: [["content", "outlet", ["loc", [null, [31, 2], [31, 12]]]]],
+      statements: [["content", "outlet", ["loc", [null, [24, 4], [24, 14]]]]],
       locals: [],
       templates: []
     };
@@ -322,7 +407,7 @@ define("lyrical-frontend/templates/index", ["exports"], function (exports) {
     };
   })());
 });
-define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
+define("lyrical-frontend/templates/search", ["exports"], function (exports) {
   exports["default"] = Ember.HTMLBars.template((function () {
     return {
       meta: {
@@ -334,8 +419,91 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "lyrical-frontend/templates/search.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [["content", "outlet", ["loc", [null, [1, 0], [1, 10]]]]],
+      locals: [],
+      templates: []
+    };
+  })());
+});
+define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
+  exports["default"] = Ember.HTMLBars.template((function () {
+    var child0 = (function () {
+      return {
+        meta: {
+          "revision": "Ember@1.13.11",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 4,
+              "column": 2
+            },
+            "end": {
+              "line": 6,
+              "column": 2
+            }
+          },
+          "moduleName": "lyrical-frontend/templates/userfeed.hbs"
+        },
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          return morphs;
+        },
+        statements: [["content", "result.track_share_url", ["loc", [null, [5, 8], [5, 34]]]]],
+        locals: ["result"],
+        templates: []
+      };
+    })();
+    return {
+      meta: {
+        "revision": "Ember@1.13.11",
+        "loc": {
+          "source": null,
+          "start": {
             "line": 1,
             "column": 0
+          },
+          "end": {
+            "line": 10,
+            "column": 6
           }
         },
         "moduleName": "lyrical-frontend/templates/userfeed.hbs"
@@ -345,14 +513,37 @@ define("lyrical-frontend/templates/userfeed", ["exports"], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1, "class", "input-group");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("span");
+        dom.setAttribute(el2, "class", "input-group-addon");
+        dom.setAttribute(el2, "id", "basic-addon1");
+        var el3 = dom.createTextNode("Search for a song");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
         return el0;
       },
-      buildRenderNodes: function buildRenderNodes() {
-        return [];
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var morphs = new Array(2);
+        morphs[0] = dom.createMorphAt(element0, 3, 3);
+        morphs[1] = dom.createMorphAt(element0, 5, 5);
+        return morphs;
       },
-      statements: [],
+      statements: [["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "search", ["loc", [null, [3, 16], [3, 22]]]]], [], []]], ["loc", [null, [3, 2], [3, 24]]]], ["block", "each", [["get", "model", ["loc", [null, [4, 20], [4, 25]]]]], [], 0, null, ["loc", [null, [4, 2], [6, 11]]]]],
       locals: [],
-      templates: []
+      templates: [child0]
     };
   })());
 });
@@ -382,7 +573,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("lyrical-frontend/app")["default"].create({"name":"lyrical-frontend","version":"0.0.0+90e3ad20"});
+  require("lyrical-frontend/app")["default"].create({"name":"lyrical-frontend","version":"0.0.0+fde41a35"});
 }
 
 /* jshint ignore:end */
